@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using TodoList.Infrastructure;
+using ToDoList.Application;
 using ToDoList.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddApplicationDI();
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlite(builder.Configuration.GetConnectionString("Sqlite")
                   ?? "Data Source=todo.db"));
