@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ToDoList.Core.Interfaces;
 using ToDoList.Infrastructure.Data;
+using ToDoList.Infrastructure.Repositories;
 
-namespace Todo.Infrastructure;
+namespace TodoList.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -13,6 +15,7 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(opt =>
             opt.UseSqlite(cfg.GetConnectionString("Sqlite") ?? "Data Source=todo.db"));
 
+        services.AddScoped<IToDoItemRepository, ToDoItemRepository>();
         return services;
     }
 }
