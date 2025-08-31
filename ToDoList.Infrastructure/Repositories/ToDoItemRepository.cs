@@ -16,7 +16,7 @@ namespace ToDoList.Infrastructure.Repositories
         {
             return await dbContext.ToDoItems.ToListAsync();
         }
-
+        
         public async Task<ToDoItem> GetToDoItemsById(Guid id)
         {
             return await dbContext.ToDoItems.FirstOrDefaultAsync(t => t.Id == id);
