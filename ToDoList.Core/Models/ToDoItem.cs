@@ -12,8 +12,11 @@ namespace ToDoList.Core.Models
         public required String Title { get; set; }
         public String? Description { get; set; }
         public bool IsCompleted { get; set; } = false;
+        public DateOnly DueDate { get; set; }
         public DateTime CreatedAt { get; set; }
 
+        public Guid ToDoListId { get; set; }
+        public Guid? CategoryId { get; set; }
 
     }
 }
