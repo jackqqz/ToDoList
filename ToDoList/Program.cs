@@ -5,6 +5,14 @@ using ToDoList.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(opts =>
+{
+    opts.AddPolicy("Frontend", policy =>
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
 builder.Services.AddApplicationDI();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddDbContext<AppDbContext>(opt =>
@@ -27,7 +35,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("Frontend");
 app.UseAuthorization();
 
 app.MapControllers();

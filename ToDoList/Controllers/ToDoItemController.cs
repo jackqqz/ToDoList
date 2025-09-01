@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ToDoList.Application.Commands;
 using ToDoList.Application.Queries;
 using ToDoList.Core.Models;
+using ToDoList.Infrastructure.Data;
 
 namespace ToDoList.API.Controllers
 {
@@ -12,10 +14,24 @@ namespace ToDoList.API.Controllers
     public class ToDoItemController(ISender sender) : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> AddToDoItemAsync([FromBody] ToDoItem toDoItem)
+        public async Task<IActionResult> AddToDoItemAsync([FromBody] ToDoItem item, [FromServices] AppDbContext db)
         {
-            var result = await sender.Send(new AddToDoItemCommand(toDoItem));
-            return Ok(result);
+            if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
+            // 1) ToDoListId must be present & valid
+            if (item.ToDoListId == Guid.Empty || !await db.ToDoLists.AnyAsync(l => l.Id == item.ToDoListId))
+                return BadRequest("Invalid or missing ToDoListId.");
+
+            // 2) CategoryId optional: treat empty/unknown as null
+            if (item.CategoryId.HasValue)
+            {
+                if (item.CategoryId.Value == Guid.Empty || !await db.ToDoCategories.AnyAsync(c => c.Id == item.CategoryId.Value))
+                    item.CategoryId = null;
+            }
+
+            db.ToDoItems.Add(item);
+            await db.SaveChangesAsync();
+            return Ok(item);
         }
 
         [HttpGet("")]
