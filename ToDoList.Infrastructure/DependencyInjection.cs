@@ -16,6 +16,9 @@ public static class DependencyInjection
             opt.UseSqlite(cfg.GetConnectionString("Sqlite") ?? "Data Source=todo.db"));
 
         services.AddScoped<IToDoItemRepository, ToDoItemRepository>();
+        services.AddScoped<IToDoListRepository, ToDoListRepository>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+
         return services;
     }
 }
