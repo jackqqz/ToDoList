@@ -47,21 +47,18 @@ export default function App() {
     function toggleCard(id: string) {
         setExpanded(prev => {
             const next = new Set(prev);
-            next.has(id) ? next.delete(id) : next.add(id);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
             return next;
         });
     }
-    function normalizeForApi(date: string): string | undefined {
-        if (!date || !date.trim()) return undefined;
-        
-        const d = new Date(date);
-        if (isNaN(d.getTime())) return undefined;
-        return d.toISOString().substring(0, 10); 
-    }
 
     async function handleCreateList() {
-        const title = newListTitle.trim();
-        if (!title) return;
+        let title = newListTitle.trim();
+        if (!title) { title = "UnnamedList"};
         const created = await createList(title);
         setLists(prev => [created, ...prev]);
         setExpanded(prev => new Set(prev).add(created.id));
@@ -89,6 +86,8 @@ export default function App() {
         if (!modal.open) return;
         const { list, title, description, dueDate, categoryId } = modal;
 
+        const parsedDate = new Date(dueDate).toISOString().substring(0, 10);
+
         if (!title.trim()) {
             setModal({ ...modal, showRequired: true });
             return;
@@ -97,7 +96,7 @@ export default function App() {
         const payload: ToDoItem = {
             title: title.trim(),
             description: description || undefined,
-            dueDate: normalizeForApi(dueDate),        // 👈 normalize here
+            dueDate: parsedDate,
             categoryId: categoryId || undefined,
         };
 

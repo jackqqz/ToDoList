@@ -14,7 +14,7 @@ public class AddItemToListCommandHandler(IToDoListRepository toDoListRepository)
         var list = await toDoListRepository.GetAsync(request.listId, ct);
         if (list is null) throw new KeyNotFoundException("List not found");
 
-        var item = new ToDoItem { Title = request.toDoItem.Title, Description = request.toDoItem.Description, ToDoListId = request.listId };
+        var item = new ToDoItem { Title = request.toDoItem.Title, Description = request.toDoItem.Description, ToDoListId = request.listId , DueDate = request.toDoItem.DueDate, CategoryId = request.toDoItem.CategoryId};
         await toDoListRepository.AddItemAsync(item, ct);
         return item.Id;
     }
