@@ -43,4 +43,3 @@ VITE_API_URL=http://localhost:5084
 ```
 (Change the port if your API runs on a different one.)
 
-*** The React Frontend still have bugs, looking for fixes soon ***
